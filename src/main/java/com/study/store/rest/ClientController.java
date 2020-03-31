@@ -2,10 +2,14 @@ package com.study.store.rest;
 
 import java.util.List;
 
+import com.study.store.exception.RecordNotFoundException;
 import com.study.store.model.Client;
 import com.study.store.service.IClientService;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,8 +31,9 @@ public class ClientController {
 
     @PostMapping("/clients")
     @PreAuthorize("hasRole('ADMIN')")
-    public Client create(@RequestBody Client client) {
-        return clientService.create(client);
+    public ResponseEntity<Client> create(@RequestBody Client client) throws RecordNotFoundException {
+        Client updated = clientService.create(client);
+        return new ResponseEntity<Client>(updated, new HttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping("/clients")
